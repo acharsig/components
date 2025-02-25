@@ -38,6 +38,9 @@ export function IframeWrapper({ id, AppComponent }: { id: string; AppComponent: 
     }
     const iframeEl = container.ownerDocument.createElement('iframe');
     iframeEl.className = styles['full-screen'];
+    //TODO:: see if I can do this
+    //iframeEl.style.height = '100%';
+    //iframeEl.style.width = '100%';
     iframeEl.id = id;
     iframeEl.title = id;
     container.appendChild(iframeEl);

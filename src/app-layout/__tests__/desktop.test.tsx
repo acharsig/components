@@ -24,7 +24,7 @@ import toolbarStyles from '../../../lib/components/app-layout/visual-refresh-too
 
 jest.mock('@cloudscape-design/component-toolkit', () => ({
   ...jest.requireActual('@cloudscape-design/component-toolkit'),
-  useContainerQuery: () => [1300, () => {}],
+  useContainerQuery: () => [1300, () => { }],
 }));
 
 describeEachAppLayout({ sizes: ['desktop'] }, ({ theme }) => {
@@ -154,7 +154,7 @@ describeEachAppLayout({ sizes: ['desktop'] }, ({ theme }) => {
 
   test('should render an active drawer', () => {
     const { wrapper } = renderComponent(
-      <AppLayout activeDrawerId={testDrawer.id} drawers={[testDrawer]} onDrawerChange={() => {}} />
+      <AppLayout activeDrawerId={testDrawer.id} drawers={[testDrawer]} onDrawerChange={() => { }} />
     );
 
     expect(wrapper.findActiveDrawer()).toBeTruthy();
@@ -257,7 +257,7 @@ describeEachAppLayout({ themes: ['classic'], sizes: ['desktop'] }, () => {
       <AppLayout toolsHide={true} drawers={[testDrawer]} ariaLabels={{ drawers: 'Drawers' }} />
     );
     fireEvent.click(screen.getByLabelText('Drawers'));
-    expect(wrapper.findActiveDrawer()).toBeTruthy();
+    expect(wrapper.findActiveDrawer()).toBeTruthy(); //TODO:: null no work
     fireEvent.click(screen.getByLabelText('Drawers'));
     expect(wrapper.findActiveDrawer()).toBeFalsy();
   });
@@ -274,7 +274,7 @@ describeEachAppLayout({ themes: ['classic'], sizes: ['desktop'] }, () => {
     const { wrapper } = renderComponent(<AppLayout navigationHide={true} drawers={[testDrawerWithoutLabels]} />);
     const drawersAside = within(wrapper.findByClassName(drawerStyles['drawer-closed'])!.getElement()).getByRole(
       'region'
-    );
+    ); //TODO:: Cannot read properties of null (reading 'getElement')
 
     expect(wrapper.findDrawerTriggerById(testDrawer.id)!.getElement()).not.toHaveAttribute('aria-label');
     expect(drawersAside).not.toHaveAttribute('aria-label');
@@ -288,7 +288,7 @@ describeEachAppLayout({ themes: ['classic'], sizes: ['desktop'] }, () => {
     const { wrapper } = renderComponent(<AppLayout drawers={[testDrawer]} ariaLabels={{ drawers: 'Drawers' }} />);
     const drawersAside = within(wrapper.findByClassName(drawerStyles['drawer-closed'])!.getElement()).getByRole(
       'region'
-    );
+    ); //TODO::Cannot read properties of null (reading 'getElement')
 
     expect(wrapper.findDrawerTriggerById('security')!.getElement()).toHaveAttribute(
       'aria-label',

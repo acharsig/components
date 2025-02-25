@@ -64,7 +64,7 @@ export function describeEachAppLayout(
           setGlobalFlag('appLayoutWidget', undefined);
           clearVisualRefreshState();
         });
-        test('mocks applied correctly', () => {
+        test('mocks applied correctly', () => { //TODO:: recieved true expected false
           const { wrapper } = renderComponent(<AppLayout />);
           expect(!!wrapper.matches(`.${visualRefreshStyles.layout}`)).toEqual(theme === 'refresh');
           expect(!!wrapper.matches(`.${visualRefreshToolbarStyles.root}`)).toEqual(theme === 'refresh-toolbar');

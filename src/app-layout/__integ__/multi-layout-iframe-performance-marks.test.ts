@@ -8,6 +8,7 @@ import createWrapper, { AppLayoutWrapper, TableWrapper } from '../../../lib/comp
 const iframeId = '#inner-iframe';
 import { usePerformanceMarks } from '../../internal/hooks/use-performance-marks';
 
+//  const files = glob.sync('src/app-layout/__integ__/multi-layout-iframe-performance-marks.test.ts');
 //some variation of above but instead of simple change url to my specific and the div ids
 //this iframe is loading the actual component
 
@@ -131,6 +132,85 @@ describe('MultiAppLayout simple', () => {
         });
     }));
 });
+
+
+
+/**/ // Inject Cloudscape Table
+// await browser.execute((selector, tableComponentString, usePerformanceMarksString) => {
+//     const container = document.querySelector(selector);
+//     if (container) {
+//         // Create script elements to inject the components
+//         const script = document.createElement('script');
+//         script.textContent = `
+//         const Table = ${tableComponentString};
+//         const usePerformanceMarks = ${usePerformanceMarksString};
+
+//         const TableDemo = () => {
+//             const ref = React.useRef(null);
+//             const attributes = usePerformanceMarks(
+//                 'test-table',
+//                 () => true,
+//                 ref,
+//                 () => ({}),
+//                 []
+//             );
+
+//             return React.createElement(Table, {
+//                 ...attributes,
+//                 ref: ref,
+//                 'data-testid': 'cloudscape-table',
+//                 items: [{ id: '1', name: 'Item 1' }],
+//                 columnDefinitions: [
+//                     { id: 'id', header: 'ID', cell: item => item.id },
+//                     { id: 'name', header: 'Name', cell: item => item.name }
+//                 ]
+//             });
+//         };
+
+//         ReactDOM.render(React.createElement(TableDemo), document.querySelector('${selector}'));
+//     `;
+//         document.head.appendChild(script);
+//     }
+// }, containerSelector, Table.toString(), usePerformanceMarks.toString());
+
+// // Wait for Cloudscape Table to be visible
+// await page.waitForVisible('[data-testid="cloudscape-table"]');
+// console.log('Cloudscape Table is now visible');
+
+// // Check for performance marks
+// const performanceMarks = await browser.execute(() => {
+//     return performance.getEntriesByType('mark')
+//         .filter(mark => {
+//             const detail = (mark as any).detail;
+//             return detail && detail.source === 'awsui';
+//         })
+//         .map(mark => ({
+//             name: mark.name,
+//             startTime: mark.startTime,
+//             detail: (mark as any).detail
+//         }));
+// });
+
+// console.log('Performance marks found:', performanceMarks);
+// console.log('Number of performance marks:', performanceMarks.length);
+// expect(performanceMarks.length).toBeGreaterThan(0);
+
+// // Check for table-related performance marks
+// const hasTableMarks = performanceMarks.some(mark => mark.name.includes('table'));
+// console.log('Table-related performance marks found:', hasTableMarks);
+// expect(hasTableMarks).toBe(true);
+
+// // Check for data-analytics-performance-mark attribute
+// const hasPerformanceAttribute = await browser.execute(() => {
+//     const table = document.querySelector('[data-testid="cloudscape-table"]');
+//     return table?.hasAttribute('data-analytics-performance-mark');
+// });
+
+// console.log('Table has data-analytics-performance-mark attribute:', hasPerformanceAttribute);
+// expect(hasPerformanceAttribute).toBe(true);
+//         });
+//     }));
+// }); */
 
 /**
  * 1) Create test framework that defines innerApp container from page

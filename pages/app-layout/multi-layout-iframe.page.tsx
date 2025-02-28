@@ -19,13 +19,12 @@ function InnerApp() {
     const resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
         console.log('ResizeObserver fired:', entry);
-        // Here you can add any specific logic you need when a resize occurs
       }
     });
 
     const observeTargetElements = () => {
       if (containerRef.current) {
-        const buttons = containerRef.current.querySelectorAll('button[variant="primary"]');
+        const buttons = containerRef.current.querySelectorAll('button[variant="primary"]'); //hopefully this works in package but integ?
         const tables = containerRef.current.querySelectorAll('table');
 
         buttons.forEach(button => resizeObserver.observe(button));

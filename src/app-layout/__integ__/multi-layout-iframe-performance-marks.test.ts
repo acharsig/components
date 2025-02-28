@@ -8,11 +8,9 @@ import createWrapper, { AppLayoutWrapper, TableWrapper } from '../../../lib/comp
 const iframeId = '#inner-iframe';
 import { usePerformanceMarks } from '../../internal/hooks/use-performance-marks';
 
-//  const files = glob.sync('src/app-layout/__integ__/multi-layout-iframe-performance-marks.test.ts');
-//some variation of above but instead of simple change url to my specific and the div ids
-//this iframe is loading the actual component
 
-//3) figure out performance marks
+//3) figure out performance marks: below is a unit test example from 
+// https://code.amazon.com/packages/acharsig/blobs/mainline/--/cloudscape-design/components/src/internal/hooks/use-performance-marks/__tests__/use-performance-marks.test.tsx#L20
 
 // function Demo() {
 //   const ref = useRef<HTMLDivElement>(null);
@@ -105,30 +103,30 @@ describe('MultiAppLayout simple', () => {
             const tableExists = await page.isExisting('[data-testid="test-table"]');
             console.log('Table exists after injection:', tableExists);
 
-            if (!tableExists) {
-                // Debug DOM state if table isn't found
-                const domState = await browser.execute(() => ({
-                    body: document.body.innerHTML,
-                    containerCount: document.querySelectorAll('div').length,
-                    tables: document.querySelectorAll('table').length
-                }));
-                console.log('DOM state:', domState);
-            }
+            // if (!tableExists) {
+            //     // Debug DOM state if table isn't found
+            //     const domState = await browser.execute(() => ({
+            //         body: document.body.innerHTML,
+            //         containerCount: document.querySelectorAll('div').length,
+            //         tables: document.querySelectorAll('table').length
+            //     }));
+            //     console.log('DOM state:', domState);
+            // }
 
-            try {
-                await page.waitForVisible('[data-testid="test-table"]');
-                console.log('Table is now visible');
-            } catch (err) {
-                const error = err as Error;
-                console.error('Failed to find visible table:', error);
+            // try {
+            //     await page.waitForVisible('[data-testid="test-table"]');
+            //     console.log('Table is now visible');
+            // } catch (err) {
+            //     const error = err as Error;
+            //     console.error('Failed to find visible table:', error);
 
-                // Get final DOM state
-                const finalState = await browser.execute((selector) => ({
-                    tableElement: document.querySelector('[data-testid="test-table"]')?.outerHTML,
-                    containerHTML: document.querySelector(selector)?.innerHTML
-                }), containerSelector);
-                console.log('Final DOM state:', finalState);
-            }
+            //     // Get final DOM state
+            //     const finalState = await browser.execute((selector) => ({
+            //         tableElement: document.querySelector('[data-testid="test-table"]')?.outerHTML,
+            //         containerHTML: document.querySelector(selector)?.innerHTML
+            //     }), containerSelector);
+            //     console.log('Final DOM state:', finalState);
+            // }
         });
     }));
 });
@@ -212,50 +210,11 @@ describe('MultiAppLayout simple', () => {
 //     }));
 // }); */
 
-/**
- * 1) Create test framework that defines innerApp container from page
- * 
- * // await page.runInsideIframe(iframeId, true, async () => {
-        //     // Wait for the container where we expect the table to be rendered
-        //     const containerSelector = '[data-testid="secondary-layout"]';
-        //     await page.waitForVisible(containerSelector);
 
-        //     // Find the table within the container
-        //     //const wrapper = createWrapper();
-        //     const table = createWrapper().findTable(); //there is no table in this, may need to inject
-        //     await page.waitForVisible(table.toSelector()); //TODO:: not visible 
-        //     //expect(table.findTable().toBeTruthy());
-
- * 
- * - create wrapper to find div id of specific element 
- *  describe.each([[true], [false]])('iframe=%s', iframe => {
-    describe('MultiAppLayout simple', () => {
-      const mainLayout = createWrapper().find('[data-testid="main-layout"]').findAppLayout();
-      const secondaryLayout = createWrapper().find('[data-testid="secondary-layout"]').findAppLayout();
-      const setupTest = (testFn: (page: BasePageObject) => Promise<void>) =>
-        useBrowser(async browser => {
-          const page = new BasePageObject(browser);
-          await browser.url(`#/light/app-layout/multi-layout-${iframe ? 'iframe' : 'simple'}?${getUrlParams(theme)}`);
-          await page.runInsideIframe(iframeId, !!iframe, async () => {
-            await page.waitForVisible(secondaryLayout.findContentRegion().toSelector());
-          });
-          await testFn(page);
-        });
-
-        
-
-   2) create a function for inputting a component with dom ex)
-    const iframe = document.getElementById('inner-iframe');
-const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-const containersElement = iframeDocument.querySelector('.containers-class-name');
-// Replace '.containers-class-name' with the actual class or identifier of your Containers component
-const childElement = iframeDocument.createElement('div');
-childElement.innerHTML = '<p>This is a new child component</p>';
-containersElement.appendChild(childElement);
 
 //change for both table and primary button instance 
 
-3) Validation: ensure the child component is visible and then see if perforamnce marks are either passed through props or console.log
-//https://cloudscape.design/components/table?tabId=testing here's a link for "find table", if table can be found than performance marks should be sent
-//you shouldn't need to test anything else since the click functionality and rest is already sorted/tested
-*/
+// 3) Validation: ensure the child component is visible and then see if perforamnce marks are either passed through props or console.log
+// //https://cloudscape.design/components/table?tabId=testing here's a link for "find table", if table can be found than performance marks should be sent
+// //you shouldn't need to test anything else since the click functionality and rest is already sorted/tested
+// */

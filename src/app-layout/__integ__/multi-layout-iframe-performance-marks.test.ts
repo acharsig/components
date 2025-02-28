@@ -102,6 +102,7 @@ describe('MultiAppLayout simple', () => {
             // Verify table existence
             const tableExists = await page.isExisting('[data-testid="test-table"]');
             console.log('Table exists after injection:', tableExists);
+            //This table is a regular html table that would not emit performance metrics, this is successful
 
             // if (!tableExists) {
             //     // Debug DOM state if table isn't found
@@ -133,7 +134,7 @@ describe('MultiAppLayout simple', () => {
 
 
 
-/**/ // Inject Cloudscape Table
+/**/ // Inject Cloudscape Table -> this is not succesful and has become diya chicken scratch
 // await browser.execute((selector, tableComponentString, usePerformanceMarksString) => {
 //     const container = document.querySelector(selector);
 //     if (container) {

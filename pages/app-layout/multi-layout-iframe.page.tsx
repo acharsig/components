@@ -27,6 +27,8 @@ function InnerApp() {
         const buttons = containerRef.current.querySelectorAll('button[variant="primary"]'); //hopefully this works in package but integ?
         const tables = containerRef.current.querySelectorAll('table');
 
+        //resize observer will only conditionally refire if LCP components are inside iframe to save overhead
+
         buttons.forEach(button => resizeObserver.observe(button));
         tables.forEach(table => resizeObserver.observe(table));
       }

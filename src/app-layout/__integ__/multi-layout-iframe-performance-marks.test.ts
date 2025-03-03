@@ -103,33 +103,77 @@ describe('MultiAppLayout simple', () => {
             const tableExists = await page.isExisting('[data-testid="test-table"]');
             console.log('Table exists after injection:', tableExists);
             //This table is a regular html table that would not emit performance metrics, this is successful
-
-            // if (!tableExists) {
-            //     // Debug DOM state if table isn't found
-            //     const domState = await browser.execute(() => ({
-            //         body: document.body.innerHTML,
-            //         containerCount: document.querySelectorAll('div').length,
-            //         tables: document.querySelectorAll('table').length
-            //     }));
-            //     console.log('DOM state:', domState);
-            // }
-
-            // try {
-            //     await page.waitForVisible('[data-testid="test-table"]');
-            //     console.log('Table is now visible');
-            // } catch (err) {
-            //     const error = err as Error;
-            //     console.error('Failed to find visible table:', error);
-
-            //     // Get final DOM state
-            //     const finalState = await browser.execute((selector) => ({
-            //         tableElement: document.querySelector('[data-testid="test-table"]')?.outerHTML,
-            //         containerHTML: document.querySelector(selector)?.innerHTML
-            //     }), containerSelector);
-            //     console.log('Final DOM state:', finalState);
-            // }
         });
     }));
+
+    test('primary button emits performance metrics', setupTest(async (page, browser) => {
+        await page.runInsideIframe(iframeId, true, async () => {
+            console.log('Looking for containers within:', secondaryLayout.toSelector());
+
+            const containersElement = createWrapper()
+                .find('[data-testid="secondary-layout"]')
+                .findSpaceBetween()
+                .findAll('div')
+                .get(2);
+
+            const containerSelector = containersElement.toSelector();
+            console.log('Containers selector:', containerSelector);
+
+            // Debug container visibility
+            const containerExists = await page.isExisting(containerSelector);
+            console.log('Container exists:', containerExists);
+
+            // Debug the container before injection
+            const beforeState = await browser.execute((selector) => {
+                const container = document.querySelector(selector);
+                return {
+                    found: !!container,
+                    innerHTML: container?.innerHTML,
+                    selector: selector
+                };
+            }, containerSelector);
+            console.log('Container state before injection:', beforeState);
+
+            // Inject table and return status
+            const injectionResult = await browser.execute((selector) => {
+                const container = document.querySelector(selector);
+                if (!container) {
+                    return { success: false, error: 'Container not found' };
+                }
+                try {
+                    const button = document.createElement('button');
+                    button.setAttribute('data-testid', 'test-button');
+                    button.setAttribute('variant', 'primary');
+                    button.textContent = 'Create Application';
+                    container.appendChild(button);
+                    return {
+                        success: true,
+                        containerHTML: container.innerHTML,
+                        buttonExists: !!document.querySelector('button[variant="primary"]')
+                        // or alternatively: !!document.querySelector('[data-testid="test-button"]')
+                    };
+                } catch (err) {
+                    const error = err as Error;
+                    return {
+                        success: false,
+                        error: error?.message || 'Unknown error occurred'
+                    };
+                }
+            }, containerSelector);
+            console.log('Injection result:', injectionResult);
+
+            // Verify primary button existence
+            const primaryButtonExists = await page.isExisting('button[variant="primary"]');
+            console.log('Primary button exists after injection:', primaryButtonExists);
+        });
+    }));
+
+    //TODO:: 
+    //1) verify the resize obersever fires for both primary button and table
+    //2) add another test case where a different component is put in if resize observer fires
+
+
+
 });
 
 

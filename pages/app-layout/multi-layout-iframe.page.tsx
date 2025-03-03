@@ -24,12 +24,12 @@ function InnerApp() {
 
     const observeTargetElements = () => {
       if (containerRef.current) {
-        const buttons = containerRef.current.querySelectorAll('button[variant="primary"]'); //hopefully this works in package but integ?
+        const primaryButtons = containerRef.current.querySelectorAll('button[variant="primary"]'); //hopefully this works in package but integ?
         const tables = containerRef.current.querySelectorAll('table');
 
         //resize observer will only conditionally refire if LCP components are inside iframe to save overhead
 
-        buttons.forEach(button => resizeObserver.observe(button));
+        primaryButtons.forEach(primaryButtons => resizeObserver.observe(primaryButtons));
         tables.forEach(table => resizeObserver.observe(table));
       }
     };

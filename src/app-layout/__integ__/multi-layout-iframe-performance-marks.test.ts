@@ -6,23 +6,12 @@ import useBrowser from '@cloudscape-design/browser-test-tools/use-browser';
 import createWrapper, { AppLayoutWrapper, TableWrapper } from '../../../lib/components/test-utils/selectors';
 
 const iframeId = '#inner-iframe';
-import { usePerformanceMarks } from '../../internal/hooks/use-performance-marks';
 
 
-//3) figure out performance marks: below is a unit test example from 
-// https://code.amazon.com/packages/acharsig/blobs/mainline/--/cloudscape-design/components/src/internal/hooks/use-performance-marks/__tests__/use-performance-marks.test.tsx#L20
 
-// function Demo() {
-//   const ref = useRef<HTMLDivElement>(null);
-//   const attributes = usePerformanceMarks(
-//     'test-component',
-//     () => true,
-//     ref,
-//     () => ({}),
-//     []
-//   );
-//   return <div {...attributes} ref={ref} data-testid="element" />;
-// }
+
+//there is performnce marks button and table test, injection issue since it pulls from url
+
 
 
 describe('MultiAppLayout simple', () => {

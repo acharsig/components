@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import styles from './iframe-wrapper.scss';
+import { useIframeResizeObserver } from '../app-layout/hooks/use-iframe-resize-observer';
 
 function copyStyles(srcDoc: Document, targetDoc: Document) {
   for (const stylesheet of Array.from(srcDoc.querySelectorAll('link[rel=stylesheet]'))) {
@@ -30,6 +31,7 @@ function syncClasses(from: HTMLElement, to: HTMLElement) {
 
 export function IframeWrapper({ id, AppComponent }: { id: string; AppComponent: React.ComponentType }) {
   const ref = useRef<HTMLDivElement>(null);
+  useIframeResizeObserver(ref);
 
   useEffect(() => {
     const container = ref.current;
@@ -38,9 +40,6 @@ export function IframeWrapper({ id, AppComponent }: { id: string; AppComponent: 
     }
     const iframeEl = container.ownerDocument.createElement('iframe');
     iframeEl.className = styles['full-screen'];
-    //TODO:: see if I can do this
-    //iframeEl.style.height = '100%';
-    //iframeEl.style.width = '100%';
     iframeEl.id = id;
     iframeEl.title = id;
     container.appendChild(iframeEl);

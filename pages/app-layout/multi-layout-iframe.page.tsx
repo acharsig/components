@@ -13,53 +13,6 @@ import labels from './utils/labels';
 import * as toolsContent from './utils/tools-content';
 
 function InnerApp() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        console.log('ResizeObserver fired:', entry);
-      }
-    });
-
-    const observeTargetElements = () => {
-      if (containerRef.current) {
-        const primaryButtons = containerRef.current.querySelectorAll('button[variant="primary"]'); //hopefully this works in package but integ?
-        const tables = containerRef.current.querySelectorAll('table');
-
-        //resize observer will only conditionally refire if LCP components are inside iframe to save overhead
-
-        primaryButtons.forEach(primaryButtons => resizeObserver.observe(primaryButtons));
-        tables.forEach(table => resizeObserver.observe(table));
-      }
-    };
-
-    observeTargetElements();
-
-    const mutationObserver = new MutationObserver((mutations) => {
-      let shouldReobserve = false;
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          shouldReobserve = true;
-        }
-      });
-
-      if (shouldReobserve) {
-        resizeObserver.disconnect();
-        observeTargetElements();
-      }
-    });
-
-    if (containerRef.current) {
-      mutationObserver.observe(containerRef.current, { childList: true, subtree: true });
-    }
-
-    return () => {
-      resizeObserver.disconnect();
-      mutationObserver.disconnect();
-    };
-  }, []);
-
   return (
     <AppLayout
       {...{ __disableRuntimeDrawers: true }}
@@ -77,9 +30,7 @@ function InnerApp() {
             External link
           </Link>
 
-          <div ref={containerRef}>
-            <Containers />
-          </div>
+          <Containers />
         </SpaceBetween>
       }
       tools={<Tools>{toolsContent.long}</Tools>}

@@ -1,6 +1,6 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { Modal, SpaceBetween, Tabs } from '~components';
 import Box from '~components/box';
@@ -11,12 +11,16 @@ const EVALUATE_COMPONENT_VISIBILITY_EVENT = 'awsui-evaluate-component-visibility
 export default function ButtonsPerformanceMarkPage() {
   const [loading, setLoading] = useState(true);
   const [disabled, setDisabled] = useState(false);
+  const [hideButton, setHideButton] = useState(false);
   const dispatchEvaluateVisibilityEvent = () => {
     const event = new CustomEvent(EVALUATE_COMPONENT_VISIBILITY_EVENT);
     setTimeout(() => {
       document.dispatchEvent(event);
     }, 0);
   };
+
+
+
 
   return (
     <Box padding="xxl">
@@ -31,15 +35,30 @@ export default function ButtonsPerformanceMarkPage() {
           Disabled
         </label>
         <label>
+          <input
+            type="checkbox"
+            checked={hideButton}
+            onChange={e => setHideButton(e.target.checked)}
+            id="hideButton"
+          />
+          Hide Primary Button
+        </label>
+        <label>
           <Button onClick={() => dispatchEvaluateVisibilityEvent()} id="evaluateComponentVisibility">
             Dispatch EvaluateVisibility Event
           </Button>
         </label>
-        <Button variant="primary" loading={loading} disabled={disabled}>
-          Primary button with loading and disabled props
-        </Button>
-        <Button variant="primary">Primary button</Button>
-        <Button>Non-primary button</Button>
+        <div style={{ display: hideButton ? 'none' : 'block' }}>
+          <Button
+            variant="primary"
+            loading={loading}
+            disabled={disabled}
+          >
+            Primary button with loading and disabled props
+          </Button>
+        </div>
+        {/* <Button variant="primary">Primary button</Button>
+        <Button>Non-primary button</Button> */}
 
         <Modal visible={false} footer={<Button variant="primary">Submit modal</Button>}></Modal>
 

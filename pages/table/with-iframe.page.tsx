@@ -66,6 +66,7 @@ function DemoTable() {
 
       <Table
         items={items}
+        header="Table inside iframe"
         {...collectionProps}
         ariaLabels={selectionLabels}
         stickyHeader={true}

@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { useModalContext } from '../../context/modal-context';
 import { useDOMAttribute } from '../use-dom-attribute';
@@ -16,24 +16,27 @@ const EVALUATE_COMPONENT_VISIBILITY_EVENT = 'awsui-evaluate-component-visibility
  *
  * @returns
  */
-const useEvaluateComponentVisibility = () => {
-  const [evaluateComponentVisibility, setEvaluateComponentVisibility] = useState(false);
+// const useEvaluateComponentVisibility = () => {
+//   const [evaluateComponentVisibility, setEvaluateComponentVisibility] = useState(false);
 
-  useEffect(() => {
-    const handleEvaluateComponentVisibility = () => {
-      setEvaluateComponentVisibility(prev => !prev);
-    };
+//   useEffect(() => {
+//     const handleEvaluateComponentVisibility = () => {
+//       setEvaluateComponentVisibility(prev => !prev);
+//     };
 
-    document.addEventListener(EVALUATE_COMPONENT_VISIBILITY_EVENT, handleEvaluateComponentVisibility);
+//     document.addEventListener(EVALUATE_COMPONENT_VISIBILITY_EVENT, handleEvaluateComponentVisibility);
 
-    return () => {
-      document.removeEventListener(EVALUATE_COMPONENT_VISIBILITY_EVENT, handleEvaluateComponentVisibility);
-    };
-  }, []);
+//     return () => {
+//       document.removeEventListener(EVALUATE_COMPONENT_VISIBILITY_EVENT, handleEvaluateComponentVisibility);
+//     };
+//   }, []);
 
-  return evaluateComponentVisibility;
-};
+//   return evaluateComponentVisibility;
+// };
 
+
+//TODO:: change this for a function into resize Observer -> fired = true; then sset that evaluate componrent viosibility portion to true.
+//the resize iobersever should always be on, there shouldn't be a conditional thing for it to observe
 /**
  * This function returns an object that needs to be spread onto the same
  * element as the `elementRef`, so that the data attribute is applied
@@ -49,17 +52,28 @@ export function usePerformanceMarks(
   const id = useRandomId();
   const { isInModal } = useModalContext();
   const attributes = useDOMAttribute(elementRef, 'data-analytics-performance-mark', id);
-  const evaluateComponentVisibility = useEvaluateComponentVisibility();
-  useEffect(() => {
-    if (!enabled() || !elementRef.current || isInModal) {
-      return;
-    }
-    const elementVisible =
-      elementRef.current.offsetWidth > 0 &&
-      elementRef.current.offsetHeight > 0 &&
-      getComputedStyle(elementRef.current).visibility !== 'hidden';
+  const [isComponentVisible, setIsComponentVisible] = useState(false);
 
-    if (!elementVisible) {
+  useEffect(() => {
+    if (!elementRef.current) return;
+
+    const resizeObserver = new ResizeObserver(entries => {
+      const entry = entries[0];
+      if (entry) {
+        const isVisible = entry.contentRect.width > 0 && entry.contentRect.height > 0;
+        setIsComponentVisible(isVisible);
+      }
+    });
+
+    resizeObserver.observe(elementRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [elementRef]);
+
+  useEffect(() => {
+    if (!enabled() || !elementRef.current || isInModal || !isComponentVisible) {
       return;
     }
 
@@ -71,19 +85,10 @@ export function usePerformanceMarks(
         ...getDetails(),
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enabled, isInModal, isComponentVisible, name, id, elementRef, getDetails]);
 
   useEffectOnUpdate(() => {
-    if (!enabled() || !elementRef.current || isInModal) {
-      return;
-    }
-    const elementVisible =
-      elementRef.current.offsetWidth > 0 &&
-      elementRef.current.offsetHeight > 0 &&
-      getComputedStyle(elementRef.current).visibility !== 'hidden';
-
-    if (!elementVisible) {
+    if (!enabled() || !elementRef.current || isInModal || !isComponentVisible) {
       return;
     }
     const updatedMarkName = `${name}Updated`;
@@ -94,8 +99,7 @@ export function usePerformanceMarks(
         ...getDetails(),
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [evaluateComponentVisibility, ...dependencies]);
+  }, [isComponentVisible, ...dependencies]);
 
   return attributes;
 }
